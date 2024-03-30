@@ -32,40 +32,30 @@ class Session {
 const sessions = new Session();
 
 app.use((req, res, next) => {
-    let currentSession = {};
-    let sessionId = req.get(SESSION_KEY);
+    const token = req.headers.authorization;
 
-    if (sessionId) {
-        currentSession = sessions.get(sessionId);
-        if (!currentSession) {
-            currentSession = {};
-            sessionId = sessions.init(res);
+    if (token) {
+        const decoded = sessions.verifyToken(token);
+
+        if (decoded) {
+            req.session = decoded;
         }
-    } else {
-        sessionId = sessions.init(res);
     }
-
-    req.session = currentSession;
-    req.sessionId = sessionId;
-
-    onFinished(req, () => {
-        const currentSession = req.session;
-        const sessionId = req.sessionId;
-        sessions.set(sessionId, currentSession);
-    });
 
     next();
 });
 
+
 app.get('/', (req, res) => {
-    if (req.session.username) {
+    if (req.session && req.session.username) {
         return res.json({
             username: req.session.username,
             logout: 'http://localhost:3000/logout'
-        })
+        });
     }
     res.sendFile(path.join(__dirname+'/index.html'));
-})
+});
+
 
 app.get('/logout', (req, res) => {
     sessions.destroy(req, res);
