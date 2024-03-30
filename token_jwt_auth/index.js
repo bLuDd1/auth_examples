@@ -17,12 +17,12 @@ class Session {
     constructor() {}
 
     generateToken(payload) {
-        return jwt.sign(payload, 'your_secret_key'); // замените 'your_secret_key' на ваш секретный ключ
+        return jwt.sign(payload, 'dimas1337');
     }
 
     verifyToken(token) {
         try {
-            return jwt.verify(token, 'your_secret_key'); // замените 'your_secret_key' на ваш секретный ключ
+            return jwt.verify(token, 'dimas1337');
         } catch (err) {
             return null;
         }
@@ -89,21 +89,17 @@ app.post('/api/login', (req, res) => {
     const { login, password } = req.body;
 
     const user = users.find((user) => {
-        if (user.login == login && user.password == password) {
-            return true;
-        }
-        return false
+        return user.login === login && user.password === password;
     });
 
     if (user) {
-        req.session.username = user.username;
-        req.session.login = user.login;
-
-        res.json({ token: req.sessionId });
+        const token = sessions.generateToken({ username: user.username, login: user.login });
+        res.json({ token });
+    } else {
+        res.status(401).send();
     }
-
-    res.status(401).send();
 });
+
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
