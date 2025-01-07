@@ -31,7 +31,7 @@ const createUser = async (accessToken) => {
             'content-type': 'application/json'
         },
         data: {
-            email: 'adidas97@gmail.com',
+            email: 'adidas197@gmail.com',
             password: 'adfwetwgwg12@',
             connection: 'Username-Password-Authentication'
         }

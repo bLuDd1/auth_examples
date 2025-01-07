@@ -32,7 +32,7 @@ const createUser = async (accessToken) => {
         },
         data: {
             email: 'adidas97@gmail.com',
-            password: 'adf',
+            password: 'adbagaagaDDA12!',
             connection: 'Username-Password-Authentication'
         }
     };
